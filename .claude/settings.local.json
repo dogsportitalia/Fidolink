@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"DATABASE_URL\\\\|SESSION_SECRET\\\\|ADMIN_PASSWORD\\\\|MERCHANT_EMAIL\\\\|CONTACT_EMAIL\\\\|REPLIT\" /Users/andreadolivo/Documents/fidolink-project --include=*.ts --include=*.md --include=*.json)",
+      "Bash(find /Users/andreadolivo/Documents/fidolink-project/migrations -type f -name *.sql)",
+      "Bash(find /Users/andreadolivo/Documents/fidolink-project/client/src/components -type f -name *.tsx)",
+      "Bash(grep -r \"integrations\\\\|payment\\\\|stripe\\\\|subscription\" /Users/andreadolivo/Documents/fidolink-project --include=*.ts --include=*.tsx --include=*.json)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(echo $DATABASE_URL)",
+      "Bash(npm install:*)",
+      "Bash(SESSION_SECRET=test-secret ADMIN_PASSWORD=test123 NODE_ENV=development timeout 5 npx tsx server/index.ts)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(npx tsx -e \":*)",
+      "Bash(tsx script/import-data.ts)",
+      "Bash(npx tsx:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+1.	Titolare del trattamento e gestore del servizio
+Il servizio FidoLink è gestito da:
+Teodoro S.r.l. Semplificata
+Sede legale: Acqui Terme (AL), Italia
+Codice Fiscale / Partita IVA: IT02698950066
+Teodoro S.r.l. Semplificata è il Titolare del trattamento dei dati personali ai sensi del Regolamento (UE) 2016/679 (GDPR).
+
+Contatti privacy: è possibile inviare richieste relative ai dati personali anche via email all’indirizzo indicato nella sezione “Contatti” (in alternativa al modulo).
+	2.	Ambito di applicazione del servizio
+Il servizio è destinato principalmente a utenti residenti nell’Unione Europea. La scansione del QR code può avvenire anche da altri Paesi; in tal caso i dati vengono trattati secondo quanto descritto nella presente informativa.
+Il presente servizio è regolato dalla legge italiana. Per ogni controversia è competente il foro italiano, salvo diverse disposizioni inderogabili di legge.
+	3.	Descrizione del servizio
+FidoLink è un servizio digitale che consente al proprietario di un cane di associare una medaglietta identificativa con QR code a un profilo online, inserire informazioni relative al cane e ai contatti del proprietario, rendere tali informazioni pubblicamente accessibili tramite scansione del QR code e ricevere notifiche in caso di scansione della medaglietta.
+Il servizio non garantisce in alcun modo il ritrovamento del cane.
+	4.	Dati personali trattati
+Il servizio tratta:
+• Dati dell’utente registrato (email, password memorizzata in forma hashata, preferenze notifiche)
+• Dati relativi al cane inseriti volontariamente (nome, foto, caratteristiche, istruzioni e note inserite dall’utente, inclusa l’eventuale presenza di informazioni di natura sanitaria/non certificata)
+• Dati tecnici (data/ora scansione, user agent, IP anonimizzato)
+• Dati di geolocalizzazione (solo se condivisi volontariamente da chi scansiona il QR code): posizione/coordinate associate alla scansione, con data e ora
+	5.	Dati NON trattati
+Il servizio non raccoglie:
+• Documenti di identità
+• Dati di pagamento (eventuali acquisti/ rinnovi avvengono sul sito web indicato dal gestore)
+• Dati biometrici
+• Dati di marketing
+Il servizio non raccoglie la posizione in automatico: la geolocalizzazione viene trattata solo se l’utente che scansiona sceglie esplicitamente di condividerla.
+	6.	Pagina pubblica del cane
+La scansione del QR code rende accessibile una pagina pubblica visibile da chiunque.
+L’utente accetta che i dati inseriti possano essere pubblicamente visibili in base alle impostazioni di visibilità scelte. In particolare: telefono e WhatsApp possono essere resi visibili, mentre l’email può essere oscurata.
+L’utente è consapevole che la pubblicazione di dati di contatto può comportare contatti indesiderati da parte di terzi e può in qualunque momento modificare le impostazioni di visibilità o disattivare i dati mostrati nella pagina pubblica dalla propria area personale.
+	7.	Accettazione delle condizioni e consenso dove necessario
+Durante la registrazione l’utente deve accettare la presente informativa e le condizioni del servizio. L’accettazione viene registrata.
+La condivisione della posizione da parte di chi scansiona è facoltativa e avviene solo su scelta esplicita dell’utente che scansiona (azione equivalente a consenso per tale specifica finalità). Chi scansiona può continuare a visualizzare la pagina anche senza condividere la posizione.
+	8.	Finalità del trattamento e base giuridica
+I dati sono trattati per:
+• Fornire il servizio e gestire l’account (base giuridica: esecuzione del servizio/contratto)
+• Consentire la visualizzazione della pagina pubblica tramite scansione del QR code (base giuridica: esecuzione del servizio/contratto e legittimo interesse alla funzionalità del servizio)
+• Inviare notifiche di servizio e notifiche di scansione all’utente registrato (base giuridica: esecuzione del servizio/contratto)
+• Trasmettere al proprietario del cane la posizione condivisa da chi scansiona, insieme a data e ora della scansione (base giuridica: scelta esplicita/consenso dell’utente che scansiona)
+• Garantire la sicurezza del sistema, prevenire abusi e attività fraudolente (base giuridica: legittimo interesse del titolare)
+	9.	Comunicazioni email
+Il sistema invia esclusivamente email di benvenuto, notifiche di scansione e comunicazioni di servizio. Non viene svolta attività di marketing.
+Se chi scansiona decide di condividere la posizione, tale informazione viene inoltrata al proprietario del cane tramite email/notifica insieme a data e ora della scansione.
+	10.	Conservazione dei dati
+• Dati dell’account e del profilo: conservati per la durata dell’account o fino a richiesta di cancellazione.
+• Eventi di scansione (inclusi data/ora, IP anonimizzato, user agent) e dati di geolocalizzazione eventualmente condivisi: conservati per 30 giorni dalla scansione e successivamente cancellati automaticamente.
+• In casi eccezionali legati alla sicurezza, prevenzione abusi o richieste dell’autorità, alcuni dati potrebbero essere conservati più a lungo nei limiti consentiti dalla normativa.
+	11.	Diritti dell’utente
+L’utente può accedere, modificare o richiedere la cancellazione dei dati utilizzando il modulo di contatto presente in questa pagina o tramite i contatti indicati dal gestore.
+Il titolare risponde alle richieste entro i termini previsti dalla normativa applicabile (di norma entro 30 giorni).
+L’utente ha inoltre diritto di proporre reclamo al Garante per la Protezione dei Dati Personali.
+	12.	Destinatari dei dati
+I dati possono essere trattati da fornitori tecnici che supportano l’erogazione del servizio (es. hosting, infrastrutture IT, invio email), nominati se necessario Responsabili del trattamento.
+La posizione condivisa da chi scansiona viene comunicata al proprietario del cane (utente registrato) attraverso le notifiche del servizio.
+	13.	Limitazione di responsabilità
+Il gestore non garantisce il ritrovamento del cane e non è responsabile per l’uso improprio dei dati da parte di terzi.
+	14.	Uso improprio e sospensione
+Il gestore può sospendere account o disattivare medagliette in caso di abuso o uso improprio.
+	15.	Durata del servizio
+Il servizio FidoLink ha una durata di 2 (due) anni dalla data di registrazione della medaglietta. Al termine di tale periodo, il servizio sarà disattivato automaticamente.
+L’utente potrà rinnovare il servizio per ulteriori 2 anni acquistando l’aggiornamento sul nostro sito web prima o dopo la scadenza. In caso di rinnovo effettuato prima della scadenza, i 2 anni aggiuntivi si sommeranno alla data di scadenza esistente.
+L’utente verrà informato dell’imminente scadenza tramite notifica nella propria area personale (dashboard) 30 giorni prima della data di disattivazione.
+	16.	Modifiche
+Il gestore si riserva il diritto di modificare la presente informativa, pubblicando gli aggiornamenti su questa pagina.
+	17.	Cookie Policy
+Il sito FidoLink utilizza esclusivamente cookie tecnici necessari al funzionamento del servizio. Non vengono utilizzati cookie di profilazione per finalità di marketing.
+
+Cookie tecnici utilizzati:
+• Cookie di sessione: necessario per mantenere l’utente autenticato durante la navigazione. Scade alla chiusura del browser o dopo 7 giorni di inattività.
+• Cookie di preferenze: memorizza le preferenze dell’interfaccia (es. tema chiaro/scuro). Persistente.
+
+Base giuridica:
+I cookie tecnici non richiedono consenso preventivo ai sensi dell’art. 122 del Codice Privacy (D.Lgs. 196/2003) e del Provvedimento del Garante dell’8 maggio 2014, in quanto strettamente necessari all’erogazione del servizio richiesto dall’utente.
+
+Gestione dei cookie:
+L’utente può gestire o disabilitare i cookie attraverso le impostazioni del proprio browser. La disabilitazione dei cookie tecnici potrebbe compromettere il corretto funzionamento del servizio, in particolare l’accesso all’area riservata.

@@ -1,0 +1,51 @@
+1. Titolare del trattamento e gestore del servizio
+Il servizio FidoLink è gestito da:
+Teodoro S.r.l. Semplificata
+Sede legale: Acqui Terme (AL), Italia
+Codice Fiscale / Partita IVA: IT02698950066
+Email di contatto ufficiale: fidolinkDogSport@gmail.com
+Teodoro S.r.l. Semplificata è il Titolare del trattamento dei dati personali ai sensi del Regolamento (UE)
+2016/679 (GDPR).
+2. Ambito di applicazione del servizio
+Il servizio FidoLink è destinato esclusivamente a utenti residenti nell’Unione Europea.
+Il presente servizio è regolato dalla legge italiana. Per ogni controversia è competente il foro italiano, salvo
+diverse disposizioni inderogabili di legge.
+3. Descrizione del servizio
+FidoLink è un servizio digitale che consente al proprietario di un cane di associare una medaglietta
+identificativa con QR code a un profilo online, inserire informazioni relative al cane e ai contatti del
+proprietario, rendere tali informazioni pubblicamente accessibili tramite scansione del QR code e ricevere
+notifiche in caso di scansione della medaglietta.
+Il servizio non garantisce in alcun modo il ritrovamento del cane.
+4. Dati personali trattati
+Il servizio tratta dati dell’utente registrato (email, password cifrata, preferenze notifiche), dati relativi al
+cane inseriti volontariamente (nome, foto, caratteristiche, note mediche non certificate, istruzioni, contatti)
+e dati tecnici (data/ora scansione, user agent, IP anonimizzato).
+5. Dati NON trattati
+Il servizio non raccoglie dati di geolocalizzazione GPS precisa, documenti di identità, dati sanitari
+certificati, dati di pagamento, dati biometrici o dati di marketing.
+6. Pagina pubblica del cane
+La scansione del QR code rende accessibile una pagina pubblica visibile da chiunque. L’utente accetta
+che i dati inseriti siano pubblicamente visibili, con telefono e WhatsApp sempre visibili ed email
+eventualmente oscurabile.
+7. Consenso esplicito
+Durante la registrazione l’utente deve accettare la presente informativa e le condizioni del servizio. Il
+consenso viene registrato.
+8. Finalità del trattamento
+I dati sono trattati per fornire il servizio, gestire gli account, inviare notifiche di servizio e garantire la
+sicurezza del sistema.
+9. Comunicazioni email
+Il sistema invia esclusivamente email di benvenuto, notifiche di scansione e comunicazioni di servizio. Non
+viene svolta attività di marketing.
+10. Conservazione dei dati
+I dati sono conservati per la durata dell’account o fino a richiesta di cancellazione.
+11. Diritti dell’utente
+L’utente può accedere, modificare o richiedere la cancellazione dei dati scrivendo a
+fidolinkDogSport@gmail.com.
+12. Limitazione di responsabilità
+Il gestore non garantisce il ritrovamento del cane e non è responsabile per l’uso improprio dei dati da parte
+di terzi.
+13. Uso improprio e sospensione
+Il gestore può sospendere account o disattivare medagliette in caso di abuso o uso improprio.
+14. Modifiche
+Il gestore si riserva il diritto di modificare la presente informativa, pubblicando gli aggiornamenti su questa
+pagina.
