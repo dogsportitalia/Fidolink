@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_22", "python3", "gcc", "gnumake", "pkg-config"]
+
+[phases.install]
+cmds = ["npm install", "npm rebuild better-sqlite3"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"

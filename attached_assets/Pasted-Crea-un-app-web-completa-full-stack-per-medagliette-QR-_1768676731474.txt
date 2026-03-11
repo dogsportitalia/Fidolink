@@ -1,0 +1,107 @@
+Crea un’app web completa (full-stack) per “medagliette QR” per cani, con queste funzionalità:
+
+STACK
+- Frontend: Next.js (App Router) + TypeScript + Tailwind
+- Backend API: Next.js Route Handlers (oppure Express integrato, ma preferisco Next API routes)
+- Database: PostgreSQL
+- ORM: Prisma
+- Auth: email+password con hashing bcrypt + sessione JWT in cookie httpOnly
+- Deploy-ready su Replit (usa variabili ambiente)
+
+CONCETTO
+- Ogni medaglietta ha:
+  1) publicId (breve, leggibile) usato nel link QR: /t/{publicId}
+  2) claimCode (segreto) usato per “rivendicare/registrare” la medaglietta da parte del proprietario
+- Il proprietario crea un account, inserisce il claimCode e registra i dati del cane.
+- Quando qualcuno scansiona la medaglietta e apre /t/{publicId}, vede una pagina pubblica con info essenziali del cane e i contatti per il ritrovamento.
+- Ogni apertura/scansione genera:
+  - un record “scan event” in DB (timestamp, ip hash, user agent)
+  - una notifica automatica al merchant (io) + opzionale al proprietario (email)
+
+PRIVACY & SICUREZZA (IMPORTANTISSIMO)
+- La pagina pubblica NON deve mostrare tutto: mostra solo
+  - Nome cane
+  - Foto (opzionale)
+  - “Cosa fare” (testo)
+  - Pulsante “Chiama proprietario” e/o “Invia WhatsApp” (se consentito)
+  - Eventuali note mediche ESSENZIALI (opzionali) tipo “ALLERGIE”, “DIABETE”, “NON INSEGUIRE”
+  - Non mostrare indirizzo completo. Al massimo città/provincia.
+- Rate limiting semplice su endpoint scansioni (per evitare spam)
+- claimCode deve stare hashato in DB (non in chiaro)
+- publicId deve essere non prevedibile facilmente (almeno 6 char alfanumerici)
+- Endpoint protetti per modifiche dati (solo owner)
+
+NOTIFICHE
+- Implementa notifiche via email usando Resend (o SendGrid) con API KEY da env.
+- Quando avviene una scansione:
+  - invia email al merchant (indirizzo configurabile da env MERCHANT_EMAIL)
+  - invia email al proprietario se ha attivato “notifiche scansione”
+- Email contiene: publicId, nome cane, data/ora, città stimata (opzionale: solo se facile), user agent (stringa breve)
+
+FUNZIONALITÀ PAGES
+1) Landing page: spiega come funziona
+2) Signup / Login
+3) Dashboard proprietario:
+   - elenco medagliette registrate
+   - bottone “Registra nuova medaglietta” (inserisce claimCode)
+4) Pagina edit profilo cane (per ogni tag):
+   - nome, foto, razza, sesso, taglia, data nascita (opzionale)
+   - contatto telefono, whatsapp, email (con toggle privacy)
+   - note mediche essenziali
+   - testo istruzioni per chi trova il cane
+   - toggle “notifiche scansione”
+5) Pagina pubblica scansione: /t/{publicId}
+   - mostra info pubbliche
+   - bottone “Ho trovato questo cane” -> apre opzioni contatto
+   - logga scan event lato server e invia notifiche
+6) Admin/Merchant panel (protetto da password admin da env ADMIN_PASSWORD o admin user):
+   - genera batch di medagliette (N) creando publicId + claimCode
+   - esporta CSV con publicId, claimCode (claimCode in chiaro SOLO in export al momento generazione, non salvato in chiaro)
+   - pagina per vedere ultimi scan events (lista)
+
+DATABASE (Prisma schema richiesto)
+- User: id, email unique, passwordHash, createdAt
+- Tag: id, publicId unique, claimCodeHash, ownerId nullable, createdAt, claimedAt
+- DogProfile: id, tagId unique, name, photoUrl, breed, sex, size, birthdate, medicalNotes, instructionsText, contactPhone, contactWhatsapp, contactEmail, showPhone boolean, showWhatsapp boolean, showEmail boolean, notifyOnScan boolean, city, updatedAt
+- ScanEvent: id, tagId, createdAt, ipHash, userAgent
+
+API ENDPOINTS
+- POST /api/auth/signup
+- POST /api/auth/login
+- POST /api/auth/logout
+- GET /api/me
+- POST /api/tags/claim (body: claimCode)
+- GET /api/tags (owner)
+- GET /api/tags/{publicId}/public (public data)
+- POST /api/tags/{publicId}/scan (logs scan + triggers notifications)
+- PUT /api/tags/{tagId}/profile (owner)
+- ADMIN:
+  - POST /api/admin/batch (body: n) -> returns csv text
+  - GET /api/admin/scans
+
+IMPLEMENTAZIONE
+- Fornisci tutto il codice, con struttura cartelle, componenti UI minimi e styling pulito.
+- Aggiungi file .env.example con:
+  DATABASE_URL
+  JWT_SECRET
+  RESEND_API_KEY (o SENDGRID_API_KEY)
+  MERCHANT_EMAIL
+  ADMIN_PASSWORD
+  APP_BASE_URL
+- Aggiungi script Prisma migrate/seed.
+- Seed: crea un admin (se usi admin user) o almeno abilita admin tramite password env.
+
+EXTRA
+- Aggiungi una funzione che crea publicId e claimCode sicuri:
+  - publicId: 6-8 char alfanumerici
+  - claimCode: formato DS-XXXX-XXXX
+- claimCode va hashato (bcrypt o sha256+salt) prima di salvarlo.
+- Scan rate limit: per IP hash max 10 scans/ora per lo stesso tag.
+- Non usare servizi esterni obbligatori oltre email provider e Postgres.
+
+OUTPUT
+- Alla fine dammi:
+  1) Istruzioni di setup su Replit
+  2) Comandi per migrazioni Prisma
+  3) Come generare un batch e scaricare il CSV
+  4) Flusso completo: “cliente compra -> registra -> scansione -> notifiche”
