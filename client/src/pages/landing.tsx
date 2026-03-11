@@ -17,12 +17,13 @@ import {
   Scan,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { AnimateOnScroll } from "@/components/animate-on-scroll";
 
-// Product images
-import heroCollar from "@assets/hero-collar.png";
-import dogWithCollar from "@assets/dog-with-collar.png";
-import collarHand from "@assets/collar-hand.png";
-import appScreenshot from "@assets/app-screenshot.PNG";
+// Product images (optimized JPEG)
+import heroCollar from "@assets/hero-collar.jpg";
+import dogWithCollar from "@assets/dog-with-collar.jpg";
+import collarHand from "@assets/collar-hand.jpg";
+import appScreenshot from "@assets/app-screenshot.jpg";
 
 export default function LandingPage() {
   return (
@@ -126,46 +127,52 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Step 1 */}
-            <div className="relative bg-card rounded-2xl p-8 shadow-md border border-border/50 text-center group hover:shadow-lg transition-shadow">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-md">
-                1
+            <AnimateOnScroll delay={0}>
+              <div className="relative bg-card rounded-2xl p-8 shadow-md border border-border/50 text-center group hover:shadow-lg transition-shadow">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-md">
+                  1
+                </div>
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-2">
+                  <Scan className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Scansiona il QR</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Chi trova il tuo cane usa la fotocamera del telefono per scansionare il QR code sulla targhetta.
+                </p>
               </div>
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-2">
-                <Scan className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Scansiona il QR</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Chi trova il tuo cane usa la fotocamera del telefono per scansionare il QR code sulla targhetta.
-              </p>
-            </div>
+            </AnimateOnScroll>
 
             {/* Step 2 */}
-            <div className="relative bg-card rounded-2xl p-8 shadow-md border border-border/50 text-center group hover:shadow-lg transition-shadow">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-md">
-                2
+            <AnimateOnScroll delay={150}>
+              <div className="relative bg-card rounded-2xl p-8 shadow-md border border-border/50 text-center group hover:shadow-lg transition-shadow">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-md">
+                  2
+                </div>
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-2">
+                  <Smartphone className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Si apre la scheda</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Nome, foto, informazioni importanti e i contatti del proprietario appaiono immediatamente.
+                </p>
               </div>
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-2">
-                <Smartphone className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Si apre la scheda</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Nome, foto, informazioni importanti e i contatti del proprietario appaiono immediatamente.
-              </p>
-            </div>
+            </AnimateOnScroll>
 
             {/* Step 3 */}
-            <div className="relative bg-card rounded-2xl p-8 shadow-md border border-border/50 text-center group hover:shadow-lg transition-shadow">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-md">
-                3
+            <AnimateOnScroll delay={300}>
+              <div className="relative bg-card rounded-2xl p-8 shadow-md border border-border/50 text-center group hover:shadow-lg transition-shadow">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-md">
+                  3
+                </div>
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-2">
+                  <Bell className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Ricevi la notifica</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Vieni avvisato via email con la posizione GPS (se condivisa) e un link per vedere dove si trova il tuo cane.
+                </p>
               </div>
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 mt-2">
-                <Bell className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Ricevi la notifica</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Vieni avvisato via email con la posizione GPS (se condivisa) e un link per vedere dove si trova il tuo cane.
-              </p>
-            </div>
+            </AnimateOnScroll>
           </div>
         </div>
       </section>
@@ -176,11 +183,11 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
 
             {/* Left — product image */}
-            <div className="relative order-2 lg:order-1">
+            <AnimateOnScroll className="relative order-2 lg:order-1">
               <div className="rounded-3xl overflow-hidden shadow-xl aspect-square">
                 <img src={collarHand} alt="Collare DogSport con targhetta FidoLink" className="w-full h-full object-cover" />
               </div>
-            </div>
+            </AnimateOnScroll>
 
             {/* Right — copy */}
             <div className="order-1 lg:order-2">
@@ -254,7 +261,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right — phone mockup */}
-            <div className="flex justify-center">
+            <AnimateOnScroll className="flex justify-center" delay={200}>
               <div className="relative">
                 {/* Phone frame */}
                 <div className="relative w-[280px] sm:w-[320px] rounded-[2.5rem] border-[8px] border-foreground/90 bg-background shadow-2xl overflow-hidden">
@@ -268,7 +275,7 @@ export default function LandingPage() {
                 {/* Decorative glow */}
                 <div className="absolute -inset-4 bg-primary/5 rounded-[3rem] -z-10 blur-xl" />
               </div>
-            </div>
+            </AnimateOnScroll>
           </div>
         </div>
       </section>
@@ -358,9 +365,11 @@ export default function LandingPage() {
             </div>
 
             {/* Right — image */}
-            <div className="rounded-3xl overflow-hidden shadow-xl aspect-[4/3]">
-              <img src={dogWithCollar} alt="Cane con collare FidoLink" className="w-full h-full object-cover" />
-            </div>
+            <AnimateOnScroll>
+              <div className="rounded-3xl overflow-hidden shadow-xl aspect-[4/3]">
+                <img src={dogWithCollar} alt="Cane con collare FidoLink" className="w-full h-full object-cover" />
+              </div>
+            </AnimateOnScroll>
           </div>
         </div>
       </section>
