@@ -7,3 +7,7 @@ dist/
 .DS_Store
 ._*
 .claude/
+.upm/
+server/public
+vite.config.ts.*
+*.tar.gz
