@@ -7,7 +7,6 @@ import { rm, readFile } from "fs/promises";
 // Server deps to bundle to reduce openat(2) syscalls for faster cold starts
 const allowlist = [
   "bcrypt",
-  "better-sqlite3",
   "cookie-parser",
   "date-fns",
   "drizzle-orm",
