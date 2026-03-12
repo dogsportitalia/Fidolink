@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" fill="currentColor">
+  <!-- Paw pad main (bottom center) -->
+  <ellipse cx="100" cy="120" rx="38" ry="32"/>
+  <!-- Toe pads -->
+  <ellipse cx="52" cy="72" rx="22" ry="28" transform="rotate(-15 52 72)"/>
+  <ellipse cx="82" cy="48" rx="18" ry="26" transform="rotate(-5 82 48)"/>
+  <ellipse cx="118" cy="48" rx="18" ry="26" transform="rotate(5 118 48)"/>
+  <ellipse cx="148" cy="72" rx="22" ry="28" transform="rotate(15 148 72)"/>
+  <!-- DOG SPORT text -->
+  <text x="100" y="172" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="22" letter-spacing="4">DOG SPORT</text>
+</svg>

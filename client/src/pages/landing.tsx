@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   QrCode,
@@ -15,17 +16,41 @@ import {
   Lock,
   Battery,
   Scan,
+  ExternalLink,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
 
 // Product images (optimized JPEG)
-import heroCollar from "@assets/hero-collar.jpg";
-import dogWithCollar from "@assets/dog-with-collar.jpg";
+import heroCollar1 from "@assets/hero-collar.jpg";
+import heroCollar2 from "@assets/hero-collar-2.jpg";
+import heroCollar3 from "@assets/hero-collar-3.jpg";
+import heroCollar4 from "@assets/hero-collar-4.jpg";
+import dogWithCollar1 from "@assets/dog-with-collar.jpg";
+import dogWithCollar2 from "@assets/dog-with-collar-2.jpg";
+import dogWithCollar3 from "@assets/dog-with-collar-3.jpg";
+import dogWithCollar4 from "@assets/dog-with-collar-4.jpg";
 import collarHand from "@assets/collar-hand.jpg";
 import appScreenshot from "@assets/app-screenshot.jpg";
+import dogsportLogo from "@assets/Logo-dogsport.png";
+
+const imagePairs = [
+  { hero: heroCollar1, dog: dogWithCollar1 },
+  { hero: heroCollar2, dog: dogWithCollar2 },
+  { hero: heroCollar3, dog: dogWithCollar3 },
+  { hero: heroCollar4, dog: dogWithCollar4 },
+];
 
 export default function LandingPage() {
+  const { hero: heroCollar, dog: dogWithCollar } = useMemo(() => {
+    const lastIndex = parseInt(localStorage.getItem("fidolink-img-index") ?? "-1", 10);
+    let index;
+    do {
+      index = Math.floor(Math.random() * imagePairs.length);
+    } while (index === lastIndex && imagePairs.length > 1);
+    localStorage.setItem("fidolink-img-index", String(index));
+    return imagePairs[index];
+  }, []);
   return (
     <div className="min-h-screen bg-background">
 
@@ -39,6 +64,17 @@ export default function LandingPage() {
 
             {/* Left — copy */}
             <div className="max-w-xl">
+              {/* DogSport branding */}
+              <div className="flex items-center gap-4 mb-6">
+                <a href="https://www.dogsport.it" target="_blank" rel="noopener noreferrer">
+                  <img src={dogsportLogo} alt="DogSport" width={150} height={150} className="w-[150px] h-[150px] object-contain" />
+                </a>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold tracking-wide">Un servizio esclusivo di DogSport</span>
+                  <span className="text-xs text-muted-foreground">Prodotti artigianali per cani</span>
+                </div>
+              </div>
+
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-8">
                 <Shield className="h-4 w-4" />
                 <span className="text-sm font-semibold tracking-wide">Sicurezza per il tuo cane</span>
@@ -76,16 +112,24 @@ export default function LandingPage() {
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4">
+                <a href="https://dogsport.it/categoria-prodotto/collari-e-pettorine/" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="gap-2 text-base px-8 h-12 bg-black hover:bg-neutral-800 text-white" data-testid="button-buy-dogsport">
+                    Acquistalo su Dog Sport
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </a>
                 <Link href="/signup">
-                  <Button size="lg" className="gap-2 text-base px-8 h-12" data-testid="button-get-started">
+                  <Button size="lg" variant="outline" className="gap-2 text-base px-8 h-12" data-testid="button-get-started">
                     Inizia ora
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
+              </div>
+              <div className="mt-3">
                 <Link href="/login">
-                  <Button size="lg" variant="outline" className="text-base px-8 h-12" data-testid="button-login-hero">
+                  <span className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer underline underline-offset-4">
                     Ho già un account
-                  </Button>
+                  </span>
                 </Link>
               </div>
             </div>
