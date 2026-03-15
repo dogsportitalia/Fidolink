@@ -107,6 +107,14 @@ export default function AdminPage() {
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
 
+  // Database management states
+  const [dbOtpSent, setDbOtpSent] = useState(false);
+  const [dbOtpCode, setDbOtpCode] = useState("");
+  const [dbOtpLoading, setDbOtpLoading] = useState(false);
+  const [dbDownloading, setDbDownloading] = useState(false);
+  const [resetStep, setResetStep] = useState(0); // 0=idle, 1-4=confirmation steps
+  const [resetLoading, setResetLoading] = useState(false);
+
   const loadProfileDetails = async (publicId: string) => {
     setSelectedProfile(null);
     setIsLoadingProfile(true);
@@ -668,6 +676,10 @@ export default function AdminPage() {
           <TabsTrigger value="traffic" className="gap-2" data-testid="tab-traffic">
             <BarChart3 className="h-4 w-4" />
             Traffico
+          </TabsTrigger>
+          <TabsTrigger value="database" className="gap-2" data-testid="tab-database">
+            <FileText className="h-4 w-4" />
+            Database
           </TabsTrigger>
         </TabsList>
 
@@ -1432,6 +1444,195 @@ export default function AdminPage() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="database">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Download Backup */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Download className="h-5 w-5 text-primary" />
+                  Download Backup
+                </CardTitle>
+                <CardDescription>
+                  Scarica una copia del database. Un codice di verifica viene inviato alla tua email.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {!dbOtpSent ? (
+                  <Button
+                    onClick={async () => {
+                      setDbOtpLoading(true);
+                      try {
+                        const res = await fetch("/api/admin/download-db/request-code", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ adminPassword }),
+                        });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.message);
+                        setDbOtpSent(true);
+                        toast({ title: "Codice inviato", description: "Controlla la tua email" });
+                      } catch (error: any) {
+                        toast({ title: "Errore", description: error.message, variant: "destructive" });
+                      } finally {
+                        setDbOtpLoading(false);
+                      }
+                    }}
+                    disabled={dbOtpLoading}
+                    className="w-full"
+                  >
+                    {dbOtpLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
+                    Richiedi codice via email
+                  </Button>
+                ) : (
+                  <div className="space-y-3">
+                    <Input
+                      placeholder="Inserisci il codice a 6 cifre"
+                      value={dbOtpCode}
+                      onChange={(e) => setDbOtpCode(e.target.value)}
+                      maxLength={6}
+                      className="text-center text-2xl tracking-widest"
+                    />
+                    <Button
+                      onClick={async () => {
+                        setDbDownloading(true);
+                        try {
+                          const res = await fetch(
+                            `/api/admin/download-db?password=${encodeURIComponent(adminPassword)}&code=${encodeURIComponent(dbOtpCode)}`
+                          );
+                          if (!res.ok) {
+                            const data = await res.json();
+                            throw new Error(data.message);
+                          }
+                          const blob = await res.blob();
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = res.headers.get("content-disposition")?.split("filename=")[1]?.replace(/"/g, "") || "fidolink-backup.db";
+                          document.body.appendChild(a);
+                          a.click();
+                          document.body.removeChild(a);
+                          URL.revokeObjectURL(url);
+                          toast({ title: "Download completato" });
+                          setDbOtpSent(false);
+                          setDbOtpCode("");
+                        } catch (error: any) {
+                          toast({ title: "Errore", description: error.message, variant: "destructive" });
+                        } finally {
+                          setDbDownloading(false);
+                        }
+                      }}
+                      disabled={dbDownloading || dbOtpCode.length !== 6}
+                      className="w-full"
+                    >
+                      {dbDownloading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Download className="h-4 w-4 mr-2" />}
+                      Scarica Database
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => { setDbOtpSent(false); setDbOtpCode(""); }}
+                      className="w-full"
+                    >
+                      Annulla
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Reset Database */}
+            <Card className="border-destructive/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="h-5 w-5" />
+                  Reset Database
+                </CardTitle>
+                <CardDescription>
+                  Cancella TUTTI i dati: utenti, medagliette, profili, scansioni. Azione irreversibile!
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {resetStep === 0 && (
+                  <Button
+                    variant="destructive"
+                    onClick={() => setResetStep(1)}
+                    className="w-full"
+                  >
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Azzera Database
+                  </Button>
+                )}
+                {resetStep === 1 && (
+                  <div className="space-y-3 p-4 bg-destructive/10 rounded-lg">
+                    <p className="font-semibold text-destructive">Conferma 1/4: Sei sicuro?</p>
+                    <p className="text-sm text-muted-foreground">Tutti i dati verranno eliminati permanentemente.</p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
+                      <Button variant="destructive" onClick={() => setResetStep(2)} className="flex-1">Continua</Button>
+                    </div>
+                  </div>
+                )}
+                {resetStep === 2 && (
+                  <div className="space-y-3 p-4 bg-destructive/10 rounded-lg">
+                    <p className="font-semibold text-destructive">Conferma 2/4: Hai fatto un backup?</p>
+                    <p className="text-sm text-muted-foreground">Scarica un backup prima di procedere. Non potrai recuperare i dati.</p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
+                      <Button variant="destructive" onClick={() => setResetStep(3)} className="flex-1">Ho il backup</Button>
+                    </div>
+                  </div>
+                )}
+                {resetStep === 3 && (
+                  <div className="space-y-3 p-4 bg-destructive/10 rounded-lg">
+                    <p className="font-semibold text-destructive">Conferma 3/4: Davvero davvero sicuro?</p>
+                    <p className="text-sm text-muted-foreground">Utenti, medagliette, profili cani, scansioni, visite - TUTTO cancellato.</p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
+                      <Button variant="destructive" onClick={() => setResetStep(4)} className="flex-1">Sono sicuro</Button>
+                    </div>
+                  </div>
+                )}
+                {resetStep === 4 && (
+                  <div className="space-y-3 p-4 bg-destructive/20 rounded-lg border border-destructive">
+                    <p className="font-bold text-destructive">Conferma 4/4: ULTIMA CONFERMA</p>
+                    <p className="text-sm text-muted-foreground">Questa azione non puo essere annullata. Premi il pulsante per azzerare il database.</p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
+                      <Button
+                        variant="destructive"
+                        disabled={resetLoading}
+                        onClick={async () => {
+                          setResetLoading(true);
+                          try {
+                            const res = await fetch("/api/admin/reset-db", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ adminPassword, confirmCode: "RESET-FIDOLINK-DB" }),
+                            });
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.message);
+                            toast({ title: "Database azzerato", description: "Tutti i dati sono stati eliminati" });
+                            setResetStep(0);
+                          } catch (error: any) {
+                            toast({ title: "Errore", description: error.message, variant: "destructive" });
+                          } finally {
+                            setResetLoading(false);
+                          }
+                        }}
+                        className="flex-1"
+                      >
+                        {resetLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
+                        AZZERA TUTTO
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
 

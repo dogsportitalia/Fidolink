@@ -27,6 +27,8 @@ import {
 import { sendOwnerNotification, sendWelcomeEmail, sendPasswordResetEmail, sendContactEmail } from "./email";
 import { uploadDogPhoto } from "./cloudinary";
 import crypto from "crypto";
+import fs from "fs";
+import { dbPath } from "./db";
 import { z } from "zod";
 
 // Auth middleware
@@ -535,15 +537,14 @@ export async function registerRoutes(
   function checkAdminRateLimit(ip: string): { allowed: boolean; remainingTime?: number } {
     const now = Date.now();
     const record = adminLoginAttempts.get(ip);
-    
-    if (record) {
+
+    if (record && record.blockedUntil > 0) {
       if (now < record.blockedUntil) {
         const remainingTime = Math.ceil((record.blockedUntil - now) / 1000 / 60);
         return { allowed: false, remainingTime };
       }
-      if (now >= record.blockedUntil) {
-        adminLoginAttempts.delete(ip);
-      }
+      // Block expired, reset
+      adminLoginAttempts.delete(ip);
     }
     return { allowed: true };
   }
@@ -870,6 +871,110 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Get location error:", error);
       res.status(500).json({ message: "Errore nel recupero della posizione" });
+    }
+  });
+
+  // ============ DATABASE MANAGEMENT (ADMIN) ============
+
+  // OTP store for DB download
+  const dbDownloadOtps = new Map<string, { code: string; expiresAt: number }>();
+
+  // Request OTP for DB download
+  app.post("/api/admin/download-db/request-code", async (req, res) => {
+    try {
+      const { adminPassword: pw } = req.body;
+
+      if (!ADMIN_PASSWORD || pw !== ADMIN_PASSWORD) {
+        return res.status(401).json({ message: "Password admin non valida" });
+      }
+
+      const code = crypto.randomInt(100000, 999999).toString();
+      const ip = getClientIp(req);
+      const ipHash = hashIp(ip);
+      dbDownloadOtps.set(ipHash, { code, expiresAt: Date.now() + 10 * 60 * 1000 }); // 10 min
+
+      const adminEmail = process.env.CONTACT_EMAIL || process.env.MERCHANT_EMAIL;
+      if (!adminEmail) {
+        return res.status(500).json({ message: "Email admin non configurata" });
+      }
+
+      // Send OTP via email
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL || "noreply@fidolink.it",
+        to: adminEmail,
+        subject: "FidoLink - Codice download database",
+        html: `<h2>Codice di verifica</h2><p>Il tuo codice per scaricare il database è:</p><h1 style="font-size:36px;letter-spacing:8px;color:#6366f1">${code}</h1><p>Scade tra 10 minuti.</p>`,
+      });
+
+      res.json({ success: true, message: "Codice inviato alla tua email" });
+    } catch (error) {
+      console.error("Request download code error:", error);
+      res.status(500).json({ message: "Errore nell'invio del codice" });
+    }
+  });
+
+  // Download database with OTP verification
+  app.get("/api/admin/download-db", async (req, res) => {
+    try {
+      const password = req.query.password as string;
+      const code = req.query.code as string;
+
+      if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
+        return res.status(401).json({ message: "Password admin non valida" });
+      }
+
+      if (!code) {
+        return res.status(400).json({ message: "Codice di verifica richiesto" });
+      }
+
+      const ip = getClientIp(req);
+      const ipHash = hashIp(ip);
+      const otp = dbDownloadOtps.get(ipHash);
+
+      if (!otp || otp.code !== code || Date.now() > otp.expiresAt) {
+        return res.status(401).json({ message: "Codice non valido o scaduto" });
+      }
+
+      dbDownloadOtps.delete(ipHash); // One-time use
+
+      if (!fs.existsSync(dbPath)) {
+        return res.status(404).json({ message: "Database non trovato" });
+      }
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      res.setHeader("Content-Disposition", `attachment; filename="fidolink-backup-${timestamp}.db"`);
+      res.setHeader("Content-Type", "application/octet-stream");
+
+      const stream = fs.createReadStream(dbPath);
+      stream.pipe(res);
+    } catch (error) {
+      console.error("Download DB error:", error);
+      res.status(500).json({ message: "Errore durante il download" });
+    }
+  });
+
+  // Reset database (delete all data)
+  app.post("/api/admin/reset-db", async (req, res) => {
+    try {
+      const { adminPassword, confirmCode } = req.body;
+
+      if (!ADMIN_PASSWORD || adminPassword !== ADMIN_PASSWORD) {
+        return res.status(401).json({ message: "Password admin non valida" });
+      }
+
+      if (confirmCode !== "RESET-FIDOLINK-DB") {
+        return res.status(400).json({ message: "Codice di conferma non valido" });
+      }
+
+      // Delete all data from tables in correct order (foreign keys)
+      await storage.resetAllData();
+
+      res.json({ success: true, message: "Database azzerato con successo" });
+    } catch (error) {
+      console.error("Reset DB error:", error);
+      res.status(500).json({ message: "Errore durante il reset" });
     }
   });
 

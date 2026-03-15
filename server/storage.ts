@@ -456,6 +456,16 @@ export class DatabaseStorage implements IStorage {
       .returning({ id: locationLinks.id });
     return deleted.length;
   }
+
+  // Reset all data (admin)
+  async resetAllData(): Promise<void> {
+    await db.delete(scanEvents);
+    await db.delete(locationLinks);
+    await db.delete(dogProfiles);
+    await db.delete(pageVisits);
+    await db.delete(tags);
+    await db.delete(users);
+  }
 }
 
 export const storage = new DatabaseStorage();

@@ -3,7 +3,7 @@ import Database from "better-sqlite3";
 import * as schema from "@shared/schema";
 import path from "path";
 
-const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), "database.db");
+export const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), "database.db");
 
 const sqlite = new Database(dbPath);
 
