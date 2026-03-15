@@ -5,7 +5,7 @@ import path from "path";
 
 export const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), "database.db");
 
-const sqlite = new Database(dbPath);
+export const sqlite = new Database(dbPath);
 
 // WAL mode = migliore performance in lettura concorrente
 sqlite.pragma("journal_mode = WAL");

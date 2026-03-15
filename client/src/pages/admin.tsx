@@ -112,8 +112,9 @@ export default function AdminPage() {
   const [dbOtpCode, setDbOtpCode] = useState("");
   const [dbOtpLoading, setDbOtpLoading] = useState(false);
   const [dbDownloading, setDbDownloading] = useState(false);
-  const [resetStep, setResetStep] = useState(0); // 0=idle, 1-4=confirmation steps
-  const [resetLoading, setResetLoading] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const uploadFileRef = useRef<HTMLInputElement>(null);
 
   const loadProfileDetails = async (publicId: string) => {
     setSelectedProfile(null);
@@ -1543,91 +1544,77 @@ export default function AdminPage() {
               </CardContent>
             </Card>
 
-            {/* Reset Database */}
-            <Card className="border-destructive/50">
+            {/* Upload/Ripristina Database */}
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-destructive">
-                  <AlertTriangle className="h-5 w-5" />
-                  Reset Database
+                <CardTitle className="flex items-center gap-2">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                  Carica Database
                 </CardTitle>
                 <CardDescription>
-                  Cancella TUTTI i dati: utenti, medagliette, profili, scansioni. Azione irreversibile!
+                  Carica un file .db di backup per ripristinare il database. Il database corrente viene sostituito.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {resetStep === 0 && (
-                  <Button
-                    variant="destructive"
-                    onClick={() => setResetStep(1)}
-                    className="w-full"
-                  >
-                    <AlertTriangle className="h-4 w-4 mr-2" />
-                    Azzera Database
-                  </Button>
-                )}
-                {resetStep === 1 && (
-                  <div className="space-y-3 p-4 bg-destructive/10 rounded-lg">
-                    <p className="font-semibold text-destructive">Conferma 1/4: Sei sicuro?</p>
-                    <p className="text-sm text-muted-foreground">Tutti i dati verranno eliminati permanentemente.</p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
-                      <Button variant="destructive" onClick={() => setResetStep(2)} className="flex-1">Continua</Button>
+                <input
+                  ref={uploadFileRef}
+                  type="file"
+                  accept=".db"
+                  className="hidden"
+                  onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => uploadFileRef.current?.click()}
+                  className="w-full"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  {uploadFile ? uploadFile.name : "Seleziona file .db"}
+                </Button>
+                {uploadFile && (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      File selezionato: <strong>{uploadFile.name}</strong> ({(uploadFile.size / 1024).toFixed(1)} KB)
+                    </p>
+                    <div className="p-3 bg-destructive/10 rounded-lg">
+                      <p className="text-sm text-destructive font-semibold">Attenzione: il database corrente viene sostituito!</p>
                     </div>
-                  </div>
-                )}
-                {resetStep === 2 && (
-                  <div className="space-y-3 p-4 bg-destructive/10 rounded-lg">
-                    <p className="font-semibold text-destructive">Conferma 2/4: Hai fatto un backup?</p>
-                    <p className="text-sm text-muted-foreground">Scarica un backup prima di procedere. Non potrai recuperare i dati.</p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
-                      <Button variant="destructive" onClick={() => setResetStep(3)} className="flex-1">Ho il backup</Button>
-                    </div>
-                  </div>
-                )}
-                {resetStep === 3 && (
-                  <div className="space-y-3 p-4 bg-destructive/10 rounded-lg">
-                    <p className="font-semibold text-destructive">Conferma 3/4: Davvero davvero sicuro?</p>
-                    <p className="text-sm text-muted-foreground">Utenti, medagliette, profili cani, scansioni, visite - TUTTO cancellato.</p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
-                      <Button variant="destructive" onClick={() => setResetStep(4)} className="flex-1">Sono sicuro</Button>
-                    </div>
-                  </div>
-                )}
-                {resetStep === 4 && (
-                  <div className="space-y-3 p-4 bg-destructive/20 rounded-lg border border-destructive">
-                    <p className="font-bold text-destructive">Conferma 4/4: ULTIMA CONFERMA</p>
-                    <p className="text-sm text-muted-foreground">Questa azione non puo essere annullata. Premi il pulsante per azzerare il database.</p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => setResetStep(0)} className="flex-1">Annulla</Button>
-                      <Button
-                        variant="destructive"
-                        disabled={resetLoading}
-                        onClick={async () => {
-                          setResetLoading(true);
-                          try {
-                            const res = await fetch("/api/admin/reset-db", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ adminPassword, confirmCode: "RESET-FIDOLINK-DB" }),
-                            });
-                            const data = await res.json();
-                            if (!res.ok) throw new Error(data.message);
-                            toast({ title: "Database azzerato", description: "Tutti i dati sono stati eliminati" });
-                            setResetStep(0);
-                          } catch (error: any) {
-                            toast({ title: "Errore", description: error.message, variant: "destructive" });
-                          } finally {
-                            setResetLoading(false);
-                          }
-                        }}
-                        className="flex-1"
-                      >
-                        {resetLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
-                        AZZERA TUTTO
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={async () => {
+                        setUploadLoading(true);
+                        try {
+                          const formData = new FormData();
+                          formData.append("database", uploadFile);
+                          formData.append("adminPassword", adminPassword);
+                          const res = await fetch("/api/admin/upload-db", {
+                            method: "POST",
+                            body: formData,
+                          });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.message);
+                          toast({ title: "Database ripristinato", description: data.message });
+                          setUploadFile(null);
+                          if (uploadFileRef.current) uploadFileRef.current.value = "";
+                        } catch (error: any) {
+                          toast({ title: "Errore", description: error.message, variant: "destructive" });
+                        } finally {
+                          setUploadLoading(false);
+                        }
+                      }}
+                      disabled={uploadLoading}
+                      className="w-full"
+                    >
+                      {uploadLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                      Ripristina Database
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => { setUploadFile(null); if (uploadFileRef.current) uploadFileRef.current.value = ""; }}
+                      className="w-full"
+                    >
+                      Annulla
+                    </Button>
                   </div>
                 )}
               </CardContent>

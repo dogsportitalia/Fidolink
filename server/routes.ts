@@ -28,7 +28,7 @@ import { sendOwnerNotification, sendWelcomeEmail, sendPasswordResetEmail, sendCo
 import { uploadDogPhoto } from "./cloudinary";
 import crypto from "crypto";
 import fs from "fs";
-import { dbPath } from "./db";
+import { dbPath, sqlite } from "./db";
 import { z } from "zod";
 
 // Auth middleware
@@ -943,6 +943,9 @@ export async function registerRoutes(
         return res.status(404).json({ message: "Database non trovato" });
       }
 
+      // Flush WAL to main database file before download
+      sqlite.pragma("wal_checkpoint(TRUNCATE)");
+
       const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
       res.setHeader("Content-Disposition", `attachment; filename="fidolink-backup-${timestamp}.db"`);
       res.setHeader("Content-Type", "application/octet-stream");
@@ -955,26 +958,61 @@ export async function registerRoutes(
     }
   });
 
-  // Reset database (delete all data)
-  app.post("/api/admin/reset-db", async (req, res) => {
-    try {
-      const { adminPassword, confirmCode } = req.body;
+  // Upload/restore database
+  const multer = (await import("multer")).default;
+  const upload = multer({ dest: "/tmp", limits: { fileSize: 50 * 1024 * 1024 } }); // max 50MB
 
-      if (!ADMIN_PASSWORD || adminPassword !== ADMIN_PASSWORD) {
+  app.post("/api/admin/upload-db", upload.single("database"), async (req, res) => {
+    try {
+      const adminPw = req.body.adminPassword;
+
+      if (!ADMIN_PASSWORD || adminPw !== ADMIN_PASSWORD) {
         return res.status(401).json({ message: "Password admin non valida" });
       }
 
-      if (confirmCode !== "RESET-FIDOLINK-DB") {
-        return res.status(400).json({ message: "Codice di conferma non valido" });
+      if (!req.file) {
+        return res.status(400).json({ message: "Nessun file caricato" });
       }
 
-      // Delete all data from tables in correct order (foreign keys)
-      await storage.resetAllData();
+      // Validate it's a real SQLite database
+      const uploadedDb = new (await import("better-sqlite3")).default(req.file.path);
+      try {
+        const tables = uploadedDb.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+        if (tables.length === 0) {
+          uploadedDb.close();
+          fs.unlinkSync(req.file.path);
+          return res.status(400).json({ message: "Il file non contiene tabelle. Non è un database valido." });
+        }
+      } catch {
+        fs.unlinkSync(req.file.path);
+        return res.status(400).json({ message: "Il file non è un database SQLite valido." });
+      }
+      uploadedDb.close();
 
-      res.json({ success: true, message: "Database azzerato con successo" });
+      // Close current database, replace file, reopen
+      sqlite.close();
+
+      // Backup current db just in case
+      const backupPath = dbPath + ".bak";
+      if (fs.existsSync(dbPath)) {
+        fs.copyFileSync(dbPath, backupPath);
+      }
+      // Remove WAL/SHM files
+      if (fs.existsSync(dbPath + "-wal")) fs.unlinkSync(dbPath + "-wal");
+      if (fs.existsSync(dbPath + "-shm")) fs.unlinkSync(dbPath + "-shm");
+
+      // Copy uploaded file to database path
+      fs.copyFileSync(req.file.path, dbPath);
+      fs.unlinkSync(req.file.path);
+
+      // Reopen database - need to restart the process for drizzle to pick up changes
+      res.json({ success: true, message: "Database ripristinato. Il server si riavvierà tra pochi secondi." });
+
+      // Graceful restart after response is sent
+      setTimeout(() => process.exit(0), 1000);
     } catch (error) {
-      console.error("Reset DB error:", error);
-      res.status(500).json({ message: "Errore durante il reset" });
+      console.error("Upload DB error:", error);
+      res.status(500).json({ message: "Errore durante il caricamento" });
     }
   });
 
