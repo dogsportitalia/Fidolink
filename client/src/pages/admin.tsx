@@ -371,7 +371,7 @@ export default function AdminPage() {
     y += 6;
     
     const steps = [
-      "Scansiona il QR qui sotto o vai su fidolink.net",
+      "Scansiona il QR qui sotto o vai su fidolink.it",
       "Crea un account con la tua email",
       "Clicca su \"Registra medaglietta\"",
       "Inserisci il codice segreto mostrato sopra",
@@ -395,7 +395,7 @@ export default function AdminPage() {
     y += 2;
     
     // QR Code Section
-    const registrationUrl = "https://fidolink.net/signup";
+    const registrationUrl = "https://fidolink.it/signup";
     const qrDataUrl = await QRCode.toDataURL(registrationUrl, { 
       width: 200, 
       margin: 1,
@@ -427,7 +427,7 @@ export default function AdminPage() {
     // Footer
     doc.setFontSize(7);
     doc.setTextColor(...mediumGray);
-    doc.text("Grazie per aver scelto FidoLink! Per assistenza: fidolink.net/legal", pageWidth / 2, y, { align: "center" });
+    doc.text("Grazie per aver scelto FidoLink! Per assistenza: fidolink.it/legal", pageWidth / 2, y, { align: "center" });
     
     return doc.output("blob");
   }

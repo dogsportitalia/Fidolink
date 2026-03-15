@@ -386,7 +386,7 @@ export async function registerRoutes(
       if (validLat !== null && validLng !== null) {
         const locationToken = crypto.randomBytes(32).toString('hex');
         await storage.createLocationLink(locationToken, validLat, validLng, profile?.name);
-        const baseUrl = process.env.APP_URL || 'https://fidolink.net';
+        const baseUrl = process.env.APP_URL || 'https://fidolink.it';
         locationUrl = `${baseUrl}/location/${locationToken}`;
       }
 
